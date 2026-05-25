@@ -1,0 +1,242 @@
+\documentclass{tufte-handout}
+
+%\geometry{showframe}% for debugging purposes -- displays the margins
+
+
+
+\newcommand{\bra}[1]{\left(#1\right)}
+\usepackage{amssymb}
+\usepackage{clrscode3e}
+\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+\usepackage{tikz}
+\usepackage{amsmath,amsthm}
+\usetikzlibrary{shapes}
+\usetikzlibrary{positioning}
+% Set up the images/graphics package
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+\graphicspath{{.}}
+
+\title{Game Theory}
+\author[Terry Qiu]{Terry Qiu}
+\date{\today}  % if the \date{} command is left out, the current date will be used
+
+% The following package makes prettier tables.  We're all about the bling!
+\usepackage{booktabs}
+
+% The units package provides nice, non-stacked fractions and better spacing
+% for units.
+\usepackage{units}
+
+% The fancyvrb package lets us customize the formatting of verbatim
+% environments.  We use a slightly smaller font.
+\usepackage{fancyvrb}
+\fvset{fontsize=\normalsize}
+
+% Small sections of multiple columns
+\usepackage{multicol}
+
+%--------Theorem Environments--------
+%theoremstyle{plain} --- default
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{quest}[thm]{Question}
+\newtheorem{claim}{Claim}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{defns}[thm]{Definitions}
+\newtheorem{con}[thm]{Construction}
+\newtheorem{exmp}[thm]{Example}
+\newtheorem{jk}[thm]{Joke}
+\newtheorem{exmps}[thm]{Examples}
+\newtheorem{notn}[thm]{Notation}
+\newtheorem{notns}[thm]{Notations}
+\newtheorem{addm}[thm]{Addendum}
+\newtheorem{exer}[thm]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{ans}[thm]{Answer}
+\newtheorem{rems}[thm]{Remarks}
+\newtheorem{warn}[thm]{Warning}
+\newtheorem{sch}[thm]{Scholium}
+
+\newcommand{\Mod}[1]{\ (\text{mod}\ #1)}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\P}{\mathbb{P}}
+\DeclareMathOperator{\Span}{Span}
+\DeclareMathOperator{\val}{val}
+\DeclareMathOperator{\comp}{comp}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\reg}{Reg}
+\DeclareMathOperator{\odd}{Odd}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\sbd}{sbd}
+\DeclareMathOperator{\capac}{cap}
+
+
+% These commands are used to pretty-print LaTeX commands
+\newcommand{\doccmd}[1]{\texttt{\textbackslash#1}}% command name -- adds backslash automatically
+\newcommand{\docopt}[1]{\ensuremath{\langle}\textrm{\textit{#1}}\ensuremath{\rangle}}% optional command argument
+\newcommand{\docarg}[1]{\textrm{\textit{#1}}}% (required) command argument
+\newenvironment{docspec}{\begin{quote}\noindent}{\end{quote}}% command specification environment
+\newcommand{\docenv}[1]{\textsf{#1}}% environment name
+\newcommand{\docpkg}[1]{\texttt{#1}}% package name
+\newcommand{\doccls}[1]{\texttt{#1}}% document class name
+\newcommand{\docclsopt}[1]{\texttt{#1}}% document class option name
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+Study notes on Osborn \& Rubinstein's A Course in Game Theory.
+\end{abstract}
+\tableofcontents
+\section{Introduction}
+Preference relation is a relation specifying an ordering of actions. That is, pereferences over some actions over others. For example we write say $x \succsim y$ to denote that $x$ is at least as good as $y$, where $\succsim$ is our relation.
+\vspace{1mm}
+
+We enforce a few assumptions to implement a consistent and sensible concept of a preference relation.
+\begin{defn}
+    A preference relation $\succsim$ is complete, if for every two outcomes of actiosn $x,y$, $x\succsim y$ or $y\succsim x$
+\end{defn}
+Pereference relations are also transitive to avoid cyclic loops.
+\begin{defn}
+    A preference relation $\succsim$ is transitive, if $x,y,z$ are outcomes of actions and $x\succsim y$, $y\succsim z$, then $x \succsim z$.
+\end{defn}
+When both these axioms are satisfied by a certain preference relation, then we say that preference relation is a rational preference rational relation.
+For a group of players with rational preferences, the group action preference formed by taking the preference of the majority may not be a rational preference relation. 
+\vspace{1mm}
+
+We can represent preference relations by payoff functions.
+\begin{defn}
+    A payoff function on a set of actions $X$ is a function $f:X\rightarrow \mathbb{R}$ such that $f(x)\geq f(y)$ for two actions $x,y\in X$ iff $x\succsim y$.
+\end{defn}
+\begin{thm}
+    If the outcomes $X$ of a set of actions $A$ is finite then every weak preference relation can be represented by a payoff funtion.
+\end{thm}
+\begin{proof}
+    See textbook.
+\end{proof}
+Formally, we have defined the payoff function over outcomes, but without loss of generality, we may consider payoff functions to be payoff functions over actions since there is a bijective correspondence between action and outcomes.
+\begin{defn}
+    A player is rational if he chooses the action $a^*$ that maximizes his pay off, in the sense that $v(a^*)\geq v(a)$ for all other actions $a$. We write $v(a)= u(x(a))$ where $x(a)$ is the outcome corresponding to $a$ and $u$ is the payoff function.
+\end{defn}
+\newpage
+\section{Nash Equilibrium}
+% \subsection{Mixed Strategies}
+% A mixed strategy is a probability distribution $\sigma_i$ over actiopns or pure strategies. In other words, for each action $a$, $\sigma_i(a)$ assigns a probability to $a$.
+% We will use $\Sigma_i$ to denote the set of all player $i$'s mixed strategy. Then the space of mixed strategy profiles is $\Sigma = \times_{i\in N} \Sigma_i$. So an element of this space is a collection of the mixed strategies that a player takes in this turn.`                                                                            `
+\subsection{Strategic Games}
+\begin{defn}
+    A strategic game is a game that consists of a finite set of players $N$ and which, for each player $i\in N$, there is a non empty set of actions $A_i$ and a preference relation $\succsim_i$ over the set $A=\times_{j\in N}A_j$
+\end{defn}
+In situations where the consequences of an action are more important than the actions themselves, we can redefine the preference relation over the set of actions using the preference relation over the set of consequences. That is, 
+$$
+a \succsim_i b \iff g(a)\succsim^*_i g(b)
+$$
+for two actions $a,b$ and where $g$ is a function mapping the set of actions to their consequences and $\succsim^*_i$ is a preference relation over the set of consequences.
+
+We can specify a game by the payoff function. That is, for each player $i$, we define a payoff function $u_i$ such that $u_i(a)\geq u_i(b)$ iff $a\succsim_i b$. So, equivalently, a game of the form $\langle N, (A_i),(\succsim_i) \rangle$ can be specified by $\langle N, (A_i),(u_i) \rangle$
+
+\subsection{Nash Equilibrium}
+
+\begin{defn}
+    
+
+A Nash equilibrium of a strategic game $\langle N, (A_i), (\succsim_i)\rangle$ is a profile of actions $a^*$ such that for each player $i$,
+
+$$(a_{-i}^*, a_i^*) \succsim_i (a_{-i}^*, a_i)$$
+
+for each $a_i\in A_i$. 
+
+\end{defn}
+That is to say, there is a steady state whereby no player would prefer deviating from their strategy if everybody also does not deviate.
+In other words, in a Nash equilibrium, everybody's action is a best response to every other's action.
+If we define $$B_i(a_{-i})=\{a_i \in A_i : (a_{-i}, a_i)\succsim_i (a_{-i}, a_i'), a_i'\in A_i\}$$
+to be the best response function that outputs the set of best response to a give set of profile by other players, then the Nash equilibrium $a^*$ is a profile where
+$$a_i^*\in B_i(a_{-i}^*)$$
+
+
+\begin{exmp}
+    (An auction) An object is to be assigned to a player in the set $\{1, \ldots, n\}$ in exchange for a payment. Player $i$ 's valuation of the object is $v_i$, and $v_1>v_2>\cdots>v_n>0$. The mechanism used to assign the object is a (sealed-bid) auction: the players simultaneously submit bids (nonnegative numbers), and the object is given to the player with the lowest index among those who submit the highest bid, in exchange for a payment.
+\end{exmp}
+\begin{exer}
+    Formulate a first price auction as a strategic game and analyze its Nash equilibria. In particular, show that in all equilibria player 1 obtains the object.
+for each $i\in N$.
+\end{exer}
+With a little bit of thought, we can see that the in this scenario, the Nash equilibria is precisely those profiles where the players bid the same price. Even if there is only two players that bid different, then at least one player stands to gain by bidding higher than his current price. Thus, any scenario where the players bid different is not a Nash equilibrium.
+
+As a consequence in all Nash equilibria, player $1$ wins the auction.
+
+In a second price auction the payment that the winner makes is the highest bid among those submitted by the players who do not win (so that if only one player submits the highest bid then the price paid is the second highest bid).
+\begin{exer}
+    Show that in a second price auction the bid $v_i$ of any player $i$ is a weakly dominant action: player $i$ 's payoff when he bids $v_i$ is at least as high as his payoff when he submits any other bid, regardless of the actions of the other players. Show that nevertheless there are ("inefficient") equilibria in which the winner is not player 1.
+\end{exer}
+There are two cases. Fix a profile of bids $a_{-i}$. Suppose $v_i$ is highest bid. Then the second highest bid is strictly less than $v_i$. Let that second highest bid be $v^* $. The player will profit $v_i-v^*>0$. If the player bids higher than $v_i$, that does not change his payoff, if he bids less than $v_i$, the outcome will be the same or he loses at which point he will not be paid. Thus bidding $v_i$ is strictly better than both of them.
+
+On the other hand if $v_i$ is not the highest bid, then there will be at least one bid higher than $v_i$. If the player bids higher to win, then he will operate at a loss of $v_i-v^*<0$, where $v^*$ is the assumed original highest price. If he bids any other amount that does not lead to a win he does not gain anything. 
+
+Thus bidding $v_i$ is weakly dominant.
+
+\textbf{Show that nevertheless there are inefficient equilibria where player $1$ is not the winner}
+
+\begin{exmp}
+     Two players are involved in a dispute over an object. The value of the object to player $i$ is $v_i>0$. Time is modeled as a continuous variable that starts at 0 and runs indefinitely. Each player chooses when to concede the object to the other player; if the first player to concede does so at time $t$, the other player obtains the object at that time. If both players concede simultaneously, the object is split equally between them, player $i$ receiving a payoff of $v_i / 2$. Time is valuable: until the first concession each player loses one unit of payoff per unit of time.
+\end{exmp}
+\begin{exer}
+    Formulate this situation as a strategic game and show that in all Nash equilibria one of the players concedes immediately.
+\end{exer}
+This is a two person strategic game with action being the time $t_i$ which each of the players want to concede the item where $t_i \in [0, \infty)$. If $t_1<t_2$ or $t_2>t_1$, then player $2$ and $1$ obtains the object for a payoff of $v_2-t_1$ and $v_1-t_2$ respectively.
+
+There are really two possible scenarios to consider, $t_1< t_2$ or $t_1=t_2$. Suppose that $t_1<t_2$. Then player $2$ is paid off by $v_2-t_1$, whereas player $1$ is paid off by $-t_1$. Now player $1$ can make the following adjustment to his strategy. He can concede at $t_1=0$ so that he has $0$ payoff, he can concede at the same time as $t_1=t_2$ to obtain $v_1/2-t_1$ payoff, or he can concede for some $t_1$ such that $t_1>t_2$ with payoff $v_1-t_2$. If $t_1>0$, then obviously player $1$ would always prefer to start closer to time $0$ to lose less. Thus we can rule out any $t_1<t_2$ scenario with $t_1>0$ as not a Nash equilibrium..
+
+
+If $t_1=t_2$, then player $1$ obtains $v_1/2-t_1$. This is larger than $0$ if $v_1> 2t_1=2t_2$.  if player $1$ choose $t_1 > t_2$, we obtain a profit of $v_1-t_2>v_1/2-t_2>v_1/2-t_1$. So there is a strictly better strategy.
+
+If it is not the case that $v_1/2-t_1>0$, then $v_1/2-t_1 \leq 0$. Suppose $v_1/2-t_1\leq0$, then if player $1$ chooses $t_1>t_2$, we have $v_1-t_2>v_1/2-t_2> v_1/2-t_1$. It follows that there is a strictly better strategy.
+
+
+In sum, if $t_1=t_2$, then that profile cannot be a Nash equilibrium. Thus the only possible cases where we may have a Nash equilibrium are precisely the cases of $t_1<t_2$ or $t_2<t_1$ with either $t_1=0$ or $t_2=0$ respectively. However, we still need to show that they are indeed Nash equilibria.
+
+Suppose that $t_1<t_2$ with $t_1=0$. Then player $1$ can either concede at a later time than $t_2$ or concede at the same time. Suppose he concedes at a later time, then he gains $v_1-t_2< v_1$. If $t_2$ is larger than $v_1$ than this outcome is not better than conceding immediately. If however $t_2$ is smaller than $v_1$, than that outcome is strictly better than conceding immediately.
+In the previous case, player $1$ may also want to concede at the same time as $t_2$, but that gains them $v_1/2-t_2$ payoff, which is worse than $0$, in the case that $t_2>v_1$.
+
+So actually the cases of $t_1<t_2$ with $t_1=0$ and $t_2>v_1$ is a Nash equilibria and by symmetry the case where $t_2<t_1$ with $t_2=0$ and $t_1>v_2$ is also a Nash equilibria.
+
+\newpage
+\subsection{Existence of the Nash Equilibrium}
+To show that there is a Nash equilibrium it suffices to show that there is a profile of actions $a^*$ such that $a_i^*\in B_i(a_{-i}^*)$ for all $i\in N$. But if we redefine $B$ to be the function $B:A\rightarrow \mathcal{P}(A)$
+$$
+B(a) =\times_{i\in N}B(a_{-i})
+$$
+then we see that there is a Nash equilibrium if there is a profile $a^*$ such that $a^*\in B(a^*)$.
+\\\\
+\begin{lem}
+    (Kakutani's fixed point theorem) Let $X$ be a compact convex subset of $\mathbb{R}^n$ and let $f: X \rightarrow X$ be a set-valued function for which
+ \begin{enumerate}
+    \item for all $x \in X$ the set $f(x)$ is nonempty and convex
+    
+    \item the graph of $f$ is closed (i.e. for all sequences $\left\{x_n\right\}$ and $\left\{y_n\right\}$ such that $y_n \in f\left(x_n\right)$ for all $n, x_n \rightarrow x$, and $y_n \rightarrow y$, we have $y \in f(x)$ ).
+ \end{enumerate}
+Then there exists $x^* \in X$ such that $x^* \in f\left(x^*\right)$.
+\end{lem}
+We say that a preference relation is quasi concave if for every $a^*\in A$ the set $\{a_i \in A_i: (a_{-i}^*, a_i)\succsim_i a^*\}$
+is concave. 
+\begin{prop}
+    A strategic game of the form $\langle N, (A_i), (\succsim_i)\rangle$ has a Nash equilibrium if for all $i\in N$, the set $A_i$ of actions of players is a compact convex subset of a Euclidean space and the preference relation $\succsim_i$ is continuos and quasi concave on $A_i$
+\end{prop}
+
+
+\end{document}
+
+
+
